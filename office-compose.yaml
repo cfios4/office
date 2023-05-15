@@ -55,7 +55,6 @@ services:
       - MYSQL_HOST=mysql
     volumes:
       - nextcloud:/var/www/html
-      - ./ncdata:/var/www/html/data
 
   mysql:
     image: mariadb:10.6
