@@ -3,44 +3,45 @@ version: "3.8"
 
 services:
 
-  caddy:
-    image: caddy:latest
-    container_name: caddy
-    restart: unless-stopped
-    ports:
-      - ${HTTP_PORT:-80}:80
-      - ${HTTPS_PORT:-443}:443
-    environment:
-      CADDYFILE: |
-        # Nextcloud reverse proxy
-        cloud.cafio.co {
-          reverse_proxy ${HOSTNAME}:8080
-        }
-
-        # OnlyOffice reverse proxy
-        office.cafio.co {
-          reverse_proxy ${HOSTNAME}:8081
-        }
-    command: sh -c 'printenv CADDYFILE > /config/Caddyfile && caddy run --config /config/Caddyfile --adapter caddyfile'
-    volumes:
-      - caddy:/data
-      - caddy:/config
-
-  # tailscale:
-  #   image: tailscale/tailscale:stable
+  # caddy:
+  #   image: caddy:latest
+  #   container_name: caddy
   #   restart: unless-stopped
-  #   container_name: tailscale
-  #   hostname: cloudserver
-  #   privileged: true
-  #   cap_add: # Required for tailscale to work
-  #     - net_admin
-  #     - sys_module
-  #   command: tailscaled # docker exec tailscaled tailscale up --qr
+  #   ports:
+  #     - ${HTTP_PORT:-80}:80
+  #     - ${HTTPS_PORT:-443}:443
   #   environment:
-  #     TS_TAILSCALED_EXTRA_ARGS: --qr
+  #     CADDYFILE: |
+  #       # Nextcloud reverse proxy
+  #       cloud.cafio.co {
+  #         reverse_proxy ${HOSTNAME}:8080
+  #       }
+
+  #       # OnlyOffice reverse proxy
+  #       office.cafio.co {
+  #         reverse_proxy ${HOSTNAME}:8081
+  #       }
+  #   command: sh -c 'printenv CADDYFILE > /config/Caddyfile && caddy run --config /config/Caddyfile --adapter caddyfile'
   #   volumes:
-  #     - tailscale:/var/lib # State data will be stored in this directory
-  #     - /dev/net/tun:/dev/net/tun # Required for tailscale to work
+  #     - caddy:/data
+  #     - caddy:/config
+
+  tailscale:
+    image: tailscale/tailscale:stable
+    restart: unless-stopped
+    container_name: tailscale
+    network_mode: host
+    hostname: nextcloud
+    privileged: true
+    cap_add: # Required for tailscale to work
+      - net_admin
+      - sys_module
+    command: tailscaled # docker exec tailscaled tailscale up --qr
+    environment:
+      TS_TAILSCALED_EXTRA_ARGS: --qr
+    volumes:
+      - tailscale:/var/lib # State data will be stored in this directory
+      - /dev/net/tun:/dev/net/tun # Required for tailscale to work
 
   nextcloud:
     image: nextcloud:latest
