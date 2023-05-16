@@ -13,7 +13,7 @@ services:
       - net_admin
       - net_raw
     environment:
-      TS_EXTRA_ARGS: --qr
+      TS_EXTRA_ARGS: --qr --timeout 60s
       TS_STATE_DIR: /var/lib
     volumes:
       - tailscale:/var/lib # State data will be stored in this directory for node persistence
