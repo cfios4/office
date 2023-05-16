@@ -51,11 +51,11 @@ services:
     restart: unless-stopped
     ports:
       - 8081:80
-    volumes:
-      - onlyoffice:/var/log/onlyoffice
+    tmpfs:
+      - /var/log/onlyoffice
 
 volumes:
   tailscale:
   nextcloud:
   mysql:
-  onlyoffice:
+  
