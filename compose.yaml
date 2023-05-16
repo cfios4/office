@@ -32,11 +32,9 @@ services:
     container_name: tailscale
     network_mode: host
     hostname: nextcloud
-    privileged: true
     cap_add: # Required for tailscale to work
       - net_admin
-      - sys_module
-    command: tailscaled # docker exec tailscaled tailscale up --qr
+      - net_raw
     environment:
       TS_EXTRA_ARGS: --qr
     volumes:
